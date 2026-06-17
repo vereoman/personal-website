@@ -6,7 +6,6 @@ import { injectSpeedInsights } from "@vercel/speed-insights";
 import { render } from "solid-js/web";
 import "solid-devtools";
 
-
 import App from "./App";
 
 inject();
