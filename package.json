@@ -19,19 +19,21 @@
   },
   "dependencies": {
     "@tanstack/solid-query": "^5.101.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "mathjs": "^15.2.0",
     "phosphor-solid": "^1.1.5",
     "solid-js": "^1.9.13"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.0",
-    "@types/node": "^25.9.1",
-    "@types/react": "^19.2.16",
+    "@tailwindcss/vite": "^4.3.1",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
     "husky": "^9.1.7",
     "oxfmt": "^0.53.0",
-    "oxlint": "^1.68.0",
+    "oxlint": "^1.70.0",
     "solid-devtools": "^0.34.5",
-    "tailwindcss": "^4.3.0",
+    "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "vite": "^8.0.16",
     "vite-plugin-solid": "^2.11.12"

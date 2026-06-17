@@ -1,10 +1,16 @@
 /* @refresh reload */
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
+import { inject } from "@vercel/analytics";
+import { injectSpeedInsights } from "@vercel/speed-insights";
 import { render } from "solid-js/web";
 import "solid-devtools";
 
+
 import App from "./App";
+
+inject();
+injectSpeedInsights();
 
 const root = document.getElementById("root");
 const queryClient = new QueryClient({
