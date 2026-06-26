@@ -23,10 +23,12 @@ const batteryStatusStorageKey = "site:battery-status-enabled";
 const scrollSoundEnabledStorageKey = "site:scroll-sound-enabled";
 const googleSansCodeStorageKey = "site:google-sans-code-enabled";
 const darkModeStorageKey = "site:dark-mode-enabled";
+const themePreferenceStorageKey = "site:theme-preference";
 const scrollLensClickDistance = 96;
 const scrollLensClickMinInterval = 58;
 
 type AppRoute = { name: "home" } | { name: "tweaks" } | { name: "not-found" };
+type ThemePreference = "auto" | "dark" | "light";
 
 function getRoute(pathname: string): AppRoute {
   if (pathname === "/") return { name: "home" };
@@ -51,6 +53,35 @@ function getStoredBoolean(key: string): boolean {
   if (typeof window === "undefined") return false;
 
   return window.localStorage.getItem(key) === "true";
+}
+
+function isIndiaDaytime(date = new Date()): boolean {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      hour12: false,
+      timeZone: "Asia/Kolkata",
+    }).format(date),
+  );
+
+  return hour >= 7 && hour < 19;
+}
+
+function getStoredThemePreference(): ThemePreference {
+  if (typeof window === "undefined") return "auto";
+
+  const storedPreference = window.localStorage.getItem(themePreferenceStorageKey);
+
+  if (storedPreference === "auto" || storedPreference === "dark" || storedPreference === "light") {
+    return storedPreference;
+  }
+
+  const storedDarkMode = window.localStorage.getItem(darkModeStorageKey);
+
+  if (storedDarkMode === "true") return "dark";
+  if (storedDarkMode === "false") return "light";
+
+  return "auto";
 }
 
 function getStoredMidiTrackUrl(): string {
@@ -78,9 +109,12 @@ export default function App() {
   const [isGoogleSansCodeEnabled, setIsGoogleSansCodeEnabled] = createSignal(
     getStoredBoolean(googleSansCodeStorageKey),
   );
-  const [isDarkModeEnabled, setIsDarkModeEnabled] = createSignal(
-    getStoredBoolean(darkModeStorageKey),
+  const [themePreference, setThemePreference] = createSignal<ThemePreference>(
+    getStoredThemePreference(),
   );
+  const [isIndiaDay, setIsIndiaDay] = createSignal(isIndiaDaytime());
+  const isDarkModeEnabled = () =>
+    themePreference() === "auto" ? !isIndiaDay() : themePreference() === "dark";
   const [activeMidiUrl, setActiveMidiUrl] = createSignal<string | null>(getStoredMidiTrackUrl());
   const [isMidiPlaying, setIsMidiPlaying] = createSignal(false);
   const [playbackTick, setPlaybackTick] = createSignal(Date.now());
@@ -160,6 +194,9 @@ export default function App() {
     const progressInterval = window.setInterval(() => {
       setPlaybackTick(Date.now());
     }, 250);
+    const themeInterval = window.setInterval(() => {
+      setIsIndiaDay(isIndiaDaytime());
+    }, 60_000);
 
     onCleanup(() => {
       window.removeEventListener("pointerdown", primeAudio, { capture: true });
@@ -167,6 +204,7 @@ export default function App() {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("wheel", handleWheel);
       window.clearInterval(progressInterval);
+      window.clearInterval(themeInterval);
     });
   });
 
@@ -246,10 +284,12 @@ export default function App() {
   };
 
   const handleDarkModeToggle = () => {
-    const nextValue = !isDarkModeEnabled();
+    const nextPreference: ThemePreference =
+      themePreference() === "auto" ? "dark" : themePreference() === "dark" ? "light" : "auto";
 
-    setIsDarkModeEnabled(nextValue);
-    window.localStorage.setItem(darkModeStorageKey, String(nextValue));
+    setThemePreference(nextPreference);
+    window.localStorage.setItem(themePreferenceStorageKey, nextPreference);
+    window.localStorage.setItem(darkModeStorageKey, String(nextPreference === "dark"));
     haptics.click();
   };
 
@@ -260,6 +300,7 @@ export default function App() {
         isMusicPlayerEnabled={isMusicPlayerEnabled}
         isGoogleSansCodeEnabled={isGoogleSansCodeEnabled}
         isDarkModeEnabled={isDarkModeEnabled}
+        themePreference={themePreference}
         isScrollSoundEnabled={isScrollSoundEnabled}
         onBatteryStatusToggle={handleBatteryStatusToggle}
         onMusicPlayerToggle={handleMusicPlayerToggle}

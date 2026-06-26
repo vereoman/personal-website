@@ -9,6 +9,7 @@ interface TweaksPageProps {
   isBatteryStatusEnabled: Accessor<boolean>;
   isGoogleSansCodeEnabled: Accessor<boolean>;
   isDarkModeEnabled: Accessor<boolean>;
+  themePreference: Accessor<"auto" | "dark" | "light">;
   isScrollSoundEnabled: Accessor<boolean>;
   onMusicPlayerToggle: () => void;
   onBatteryStatusToggle: () => void;
@@ -26,8 +27,17 @@ export function TweaksPage(props: TweaksPageProps) {
           <div class="bg-background flex flex-col">
             {[
               {
-                title: "Use dark mode",
-                enabled: props.isDarkModeEnabled,
+                title: () =>
+                  `Theme: ${
+                    props.themePreference() === "auto"
+                      ? props.isDarkModeEnabled()
+                        ? "Auto night"
+                        : "Auto day"
+                      : props.themePreference() === "dark"
+                        ? "Night"
+                        : "Day"
+                  }`,
+                enabled: () => props.themePreference() === "auto",
                 onToggle: props.onDarkModeToggle,
               },
               {
@@ -84,9 +94,13 @@ export function TweaksPage(props: TweaksPageProps) {
 }
 
 interface SettingTileProps {
-  title: string;
+  title: string | Accessor<string>;
   enabled: Accessor<boolean>;
   onToggle: () => void;
+}
+
+function getSettingTitle(title: SettingTileProps["title"]): string {
+  return typeof title === "function" ? title() : title;
 }
 
 function SettingTile(props: SettingTileProps) {
@@ -101,7 +115,7 @@ function SettingTile(props: SettingTileProps) {
       <p
         class={`text-sm leading-snug font-normal tracking-wide transition-colors sm:text-base ${props.enabled() ? "text-card-foreground" : "text-[var(--text-muted)]"}`}
       >
-        {props.title}
+        {getSettingTitle(props.title)}
       </p>
     </button>
   );

@@ -1,3 +1,4 @@
+/* project-2 component - commented out
 import { useQuery } from "@tanstack/solid-query";
 import { CaretRight, GitCommit as GitCommitIcon } from "phosphor-solid";
 import { For, Show } from "solid-js";
@@ -106,3 +107,4 @@ export function Project2(props: InteractiveProps) {
     </section>
   );
 }
+*/

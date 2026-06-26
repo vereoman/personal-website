@@ -31,7 +31,7 @@ export function About(props: InteractiveProps) {
             shaping how products behave rather than just how they look.
           </p>
           <p class="mt-6 text-left text-lg leading-relaxed text-[var(--text-subtle)] sm:text-xl md:text-justify">
-            Here are my socials. View my work on{" "}
+            Here are my most active socials. View my work on{" "}
             <a
               href="https://github.com/armancurr"
               class="hover:text-foreground inline-flex items-baseline gap-1.5 font-semibold transition-colors"
@@ -44,7 +44,7 @@ export function About(props: InteractiveProps) {
               />
               GitHub
             </a>
-            , follow me on{" "}
+            and follow me on{" "}
             <a
               href="https://twitter.com/rrucnamra"
               class="hover:text-foreground inline-flex items-baseline gap-1.5 font-semibold transition-colors"
@@ -57,7 +57,8 @@ export function About(props: InteractiveProps) {
               />
               Twitter
             </a>
-            , connect on{" "}
+            .
+            {/* , connect on{" "}
             <a
               href="https://www.linkedin.com/in/armancurr/"
               class="hover:text-foreground inline-flex items-baseline gap-1.5 font-semibold transition-colors"
@@ -69,8 +70,7 @@ export function About(props: InteractiveProps) {
                 class="inline-block size-[0.95em] shrink-0 translate-y-[0.1em] bg-current [mask:url('/linkedin.svg')_center/contain_no-repeat]"
               />
               LinkedIn
-            </a>
-            .
+            </a> */}
           </p>
         </div>
       </div>

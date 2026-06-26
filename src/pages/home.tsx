@@ -4,8 +4,8 @@ import { About } from "../components/about";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import { Hero } from "../components/hero";
-import { Project1 } from "../components/project-1";
-import { Project2 } from "../components/project-2";
+// import { Project1 } from "../components/project-1";
+// import { Project2 } from "../components/project-2";
 import { Work } from "../components/work";
 import type { MidiPlaybackSnapshot } from "../lib/use-sound";
 
@@ -31,8 +31,8 @@ export function HomePage(props: HomePageProps) {
       <Hero />
       <About onPress={props.onPress} />
       <Work onPress={props.onPress} />
-      <Project1 onPress={props.onPress} />
-      <Project2 onPress={props.onPress} />
+      {/* <Project1 onPress={props.onPress} /> */}
+      {/* <Project2 onPress={props.onPress} /> */}
       <Footer />
     </div>
   );
