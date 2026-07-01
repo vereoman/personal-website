@@ -1,1 +1,1 @@
-bun run check
+bun run fmt && bun run lint && bun run typecheck
