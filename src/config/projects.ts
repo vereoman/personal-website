@@ -11,14 +11,14 @@ export type ProjectConfig = {
 
 export const projects = [
   {
-    slug: "bystanderland",
-    name: "Bystanderland",
+    slug: "townbase",
+    name: "Townbase",
     owner: "armancurr",
-    repo: "bystanderland",
+    repo: "townbase",
     branch: "main",
     defaultFile: "README.md",
-    githubUrl: "https://github.com/armancurr/bystanderland",
-    liveUrl: "https://bystanderland.vercel.app",
+    githubUrl: "https://github.com/armancurr/townbase",
+    liveUrl: "https://townbase.vercel.app",
   },
   {
     slug: "bloomsite",

@@ -1,4 +1,3 @@
-/* project-1 component - commented out
 import { useQuery } from "@tanstack/solid-query";
 import { CaretRight, GitCommit as GitCommitIcon } from "phosphor-solid";
 import { For, Show } from "solid-js";
@@ -11,9 +10,9 @@ type InteractiveProps = {
 };
 
 const project = {
-  ...getProjectBySlug("bystanderland")!,
+  ...getProjectBySlug("townbase")!,
   description:
-    "An interactive web project about presence, observation, and the small systems that make a place feel alive.",
+    "An interactive town-building base for shaping a small place through simple systems and readable state.",
 };
 
 function ShovelIcon() {
@@ -62,11 +61,11 @@ export function Project1(props: InteractiveProps) {
           <div>
             <div>
               <a
-                href={project.githubUrl}
+                href={project.liveUrl}
                 class="text-foreground flex w-fit items-center gap-2 hover:text-[var(--text-subtle)]"
                 rel="noreferrer"
                 target="_blank"
-                aria-label={`Open ${project.name} repository on GitHub`}
+                aria-label={`Open ${project.name} site`}
               >
                 <ShovelIcon />
                 <CaretRight class="text-[var(--text-muted)]" size={18} weight="fill" />
@@ -85,7 +84,6 @@ export function Project1(props: InteractiveProps) {
                         href={commit.html_url}
                         class="group hover:text-foreground grid min-w-0 grid-cols-[16px_minmax(0,1fr)] items-center gap-2 text-base text-[var(--text-subtle)]"
                         rel="noreferrer"
-                        target="_blank"
                       >
                         <GitCommitIcon
                           class="group-hover:text-foreground text-[var(--text-muted)]"
@@ -105,4 +103,3 @@ export function Project1(props: InteractiveProps) {
     </section>
   );
 }
-*/
