@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/solid-query";
-import { CaretRight, GitCommit as GitCommitIcon } from "phosphor-solid";
-import { For, Show } from "solid-js";
+// import { useQuery } from "@tanstack/solid-query";
+import { CaretRight } from "phosphor-solid";
+// import { For, Show } from "solid-js";
 
 import { getProjectBySlug } from "../config/projects";
-import { fetchCommits, githubCacheTimes, githubQueryKeys } from "../lib/github";
+// import { fetchCommits, githubCacheTimes, githubQueryKeys } from "../lib/github";
 
 type InteractiveProps = {
   onPress: () => void;
@@ -31,12 +31,12 @@ function ShovelIcon() {
 }
 
 export function Project1(props: InteractiveProps) {
-  const commitsQuery = useQuery(() => ({
-    queryKey: githubQueryKeys.commits(project, project.branch),
-    queryFn: ({ signal }) => fetchCommits(project, project.branch, signal),
-    staleTime: githubCacheTimes.commits,
-  }));
-  const commits = () => commitsQuery.data?.slice(0, 4) ?? [];
+  // const commitsQuery = useQuery(() => ({
+  //   queryKey: githubQueryKeys.commits(project, project.branch),
+  //   queryFn: ({ signal }) => fetchCommits(project, project.branch, signal),
+  //   staleTime: githubCacheTimes.commits,
+  // }));
+  // const commits = () => commitsQuery.data?.slice(0, 4) ?? [];
 
   return (
     <section class="relative w-full">
@@ -75,28 +75,28 @@ export function Project1(props: InteractiveProps) {
                 {project.description}
               </p>
             </div>
-            <Show when={commits().length}>
-              <div class="mt-8 overflow-hidden sm:mt-10">
-                <div class="space-y-2">
-                  <For each={commits()}>
-                    {(commit) => (
-                      <a
-                        href={commit.html_url}
-                        class="group hover:text-foreground grid min-w-0 grid-cols-[16px_minmax(0,1fr)] items-center gap-2 text-base text-[var(--text-subtle)]"
-                        rel="noreferrer"
-                      >
-                        <GitCommitIcon
-                          class="group-hover:text-foreground text-[var(--text-muted)]"
-                          size={15}
-                          weight="fill"
-                        />
-                        <span class="truncate">{commit.commit.message.split("\n")[0]}</span>
-                      </a>
-                    )}
-                  </For>
+            {/* <Show when={commits().length}>
+                <div class="mt-8 overflow-hidden sm:mt-10">
+                  <div class="space-y-2">
+                    <For each={commits()}>
+                      {(commit) => (
+                        <a
+                          href={commit.html_url}
+                          class="group hover:text-foreground grid min-w-0 grid-cols-[16px_minmax(0,1fr)] items-center gap-2 text-base text-[var(--text-subtle)]"
+                          rel="noreferrer"
+                        >
+                          <GitCommitIcon
+                            class="group-hover:text-foreground text-[var(--text-muted)]"
+                            size={15}
+                            weight="fill"
+                          />
+                          <span class="truncate">{commit.commit.message.split("\n")[0]}</span>
+                        </a>
+                      )}
+                    </For>
+                  </div>
                 </div>
-              </div>
-            </Show>
+              </Show> */}
           </div>
         </div>
       </div>
