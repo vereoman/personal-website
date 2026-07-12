@@ -97,6 +97,8 @@ function getStoredMidiTrackUrl(): string {
 }
 
 export default function App() {
+  const usesMacCommandKey =
+    typeof navigator !== "undefined" && navigator.platform.toUpperCase().startsWith("MAC");
   const initialMusicPlayerEnabled = getStoredBoolean(musicPlayerStorageKey);
   const [selectedPreset] = createSignal<SoundPreset>(getStoredSoundPreset());
   const [isMusicPlayerEnabled, setIsMusicPlayerEnabled] = createSignal(initialMusicPlayerEnabled);
@@ -167,7 +169,11 @@ export default function App() {
       lastLensClickAt = now;
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && !event.altKey && !event.metaKey && event.code === "Comma") {
+      const hasTweaksModifier = usesMacCommandKey
+        ? event.metaKey && !event.ctrlKey
+        : event.ctrlKey && !event.metaKey;
+
+      if (hasTweaksModifier && !event.altKey && event.code === "Comma") {
         event.preventDefault();
         window.location.href = route.name === "tweaks" ? "/" : "/tweaks";
         return;
@@ -314,7 +320,7 @@ export default function App() {
   }
 
   if (route.name === "not-found") {
-    return <NotFoundPage />;
+    return <NotFoundPage shortcutLabel={usesMacCommandKey ? "⌘+," : "Ctrl+,"} />;
   }
 
   return (

@@ -3,7 +3,7 @@ export function Hero() {
     <section class="relative w-full">
       <div class="site-pattern pointer-events-none absolute inset-y-0 left-1/2 w-screen -translate-x-1/2" />
 
-      <div class="border-border bg-background relative mx-auto w-full max-w-6xl cursor-crosshair overflow-hidden border-x border-t">
+      <div class="border-border bg-background relative mx-auto w-full max-w-5xl cursor-crosshair overflow-hidden border-x border-t">
         <span aria-hidden="true" class="pointer-events-none absolute top-0 left-0 z-10">
           <span class="absolute top-[-1px] left-[-1px] h-px w-2 bg-[var(--corner)]" />
           <span class="absolute top-[-8px] left-[-1px] h-4 w-px bg-[var(--corner)]" />

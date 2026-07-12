@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <footer class="w-full">
-      <div class="border-border relative mx-auto flex h-[max(6rem,calc((100vh-660px)/2))] w-full max-w-6xl items-center border-x sm:h-[max(8rem,calc((100vh-660px)/2))]">
+      <div class="border-border relative mx-auto flex h-[max(6rem,calc((100vh-660px)/2))] w-full max-w-5xl items-center border-x sm:h-[max(8rem,calc((100vh-660px)/2))]">
         <span
           aria-hidden="true"
           class="bg-border pointer-events-none absolute top-[-1px] left-1/2 h-px w-screen -translate-x-1/2"

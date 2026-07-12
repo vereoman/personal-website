@@ -22,7 +22,7 @@ export function Work(props: InteractiveProps) {
 
       <div
         id="work"
-        class="border-border bg-background relative mx-auto grid w-full max-w-6xl content-center border-x border-y px-8 py-14 sm:px-12 md:h-[min(66vw,660px)] md:min-h-[360px] md:px-16 md:py-0"
+        class="border-border bg-background relative mx-auto grid w-full max-w-5xl content-center border-x border-y px-8 py-14 sm:px-12 md:h-[min(66vw,660px)] md:min-h-[360px] md:px-20 lg:px-24 md:py-0"
         onPointerDown={props.onPress}
       >
         <span
@@ -50,29 +50,37 @@ export function Work(props: InteractiveProps) {
           <span class="absolute right-[-1px] bottom-[-8px] h-4 w-px bg-[var(--corner)]" />
         </span>
 
-        <div class="mx-auto w-full max-w-xl">
-          {workExperience.map((job) => (
-            <div>
-              <h3 class="text-foreground text-left text-xl font-semibold sm:text-2xl">
-                {job.title}
-              </h3>
-              <div class="mt-4 flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
-                <a
-                  href={job.companyUrl}
-                  class="transition-colors hover:text-[var(--text-subtle)]"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  {job.company}
-                </a>
-                <CaretRight class="text-[var(--text-muted)]" size={14} weight="fill" />
-                <span>{job.period}</span>
+        <div class="mx-auto grid w-full grid-cols-1 gap-10 md:grid-cols-3 md:items-start md:gap-16">
+          <div>
+            <h2 class="text-foreground text-left text-lg font-semibold sm:text-xl">Experience</h2>
+            <p class="mt-2 max-w-48 text-sm leading-5 text-[var(--text-muted)]">
+              Places I’ve worked and products I’ve helped shape.
+            </p>
+          </div>
+          <div class="max-w-2xl md:col-span-2">
+            {workExperience.map((job) => (
+              <div>
+                <h3 class="text-foreground text-left text-lg font-semibold sm:text-xl">
+                  {job.title}
+                </h3>
+                <div class="mt-4 flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
+                  <a
+                    href={job.companyUrl}
+                    class="transition-colors hover:text-[var(--text-subtle)]"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {job.company}
+                  </a>
+                  <CaretRight class="text-[var(--text-muted)]" size={14} weight="fill" />
+                  <span>{job.period}</span>
+                </div>
+                <p class="mt-6 text-left text-base leading-6 text-[var(--text-subtle)] sm:text-lg sm:leading-7 md:text-justify">
+                  {job.description}
+                </p>
               </div>
-              <p class="mt-6 text-left text-lg leading-relaxed text-[var(--text-subtle)] sm:text-xl md:text-justify">
-                {job.description}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

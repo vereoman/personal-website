@@ -23,7 +23,7 @@ export function PageFrame(props: PageFrameProps) {
       <section class="relative w-full">
         <div class="site-pattern pointer-events-none absolute inset-y-0 left-1/2 w-screen -translate-x-1/2" />
 
-        <div class="border-border bg-background relative mx-auto flex w-full max-w-6xl flex-col border-x border-y md:min-h-[660px]">
+        <div class="border-border bg-background relative mx-auto flex w-full max-w-5xl flex-col border-x border-y md:min-h-[660px]">
           <span
             aria-hidden="true"
             class="bg-border pointer-events-none absolute top-[-1px] left-1/2 h-px w-screen -translate-x-1/2"

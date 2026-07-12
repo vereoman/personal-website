@@ -42,7 +42,7 @@ export function Project1(props: InteractiveProps) {
     <section class="relative w-full">
       <div
         id="project-1"
-        class="border-border bg-background relative mx-auto grid w-full max-w-6xl content-center border-x border-b px-8 py-14 sm:px-12 md:h-[min(66vw,660px)] md:min-h-[360px] md:px-16 md:py-0"
+        class="border-border bg-background relative mx-auto grid w-full max-w-5xl content-center border-x border-b px-8 py-14 sm:px-12 md:h-[min(66vw,660px)] md:min-h-[360px] md:px-20 lg:px-24 md:py-0"
         onPointerDown={props.onPress}
       >
         <span
@@ -57,24 +57,28 @@ export function Project1(props: InteractiveProps) {
           <span class="absolute right-[-1px] bottom-[-1px] h-px w-2 bg-[var(--corner)]" />
           <span class="absolute right-[-1px] bottom-[-8px] h-4 w-px bg-[var(--corner)]" />
         </span>
-        <div class="mx-auto max-w-xl">
+        <div class="mx-auto grid w-full grid-cols-1 gap-10 md:grid-cols-3 md:items-start md:gap-16">
           <div>
-            <div>
-              <a
-                href={project.liveUrl}
-                class="text-foreground flex w-fit items-center gap-2 hover:text-[var(--text-subtle)]"
-                rel="noreferrer"
-                target="_blank"
-                aria-label={`Open ${project.name} site`}
-              >
-                <ShovelIcon />
-                <CaretRight class="text-[var(--text-muted)]" size={18} weight="fill" />
-                <h2 class="text-xl leading-none font-semibold sm:text-2xl">{project.name}</h2>
-              </a>
-              <p class="mt-6 text-left text-lg leading-relaxed text-[var(--text-subtle)] sm:text-xl md:text-justify">
-                {project.description}
-              </p>
-            </div>
+            <h2 class="text-foreground text-left text-lg font-semibold sm:text-xl">Projects</h2>
+            <p class="mt-2 max-w-48 text-sm leading-5 text-[var(--text-muted)]">
+              Projects I’ve worked on.
+            </p>
+          </div>
+          <div class="max-w-2xl md:col-span-2">
+            <a
+              href={project.liveUrl}
+              class="text-foreground flex w-fit items-center gap-2 hover:text-[var(--text-subtle)]"
+              rel="noreferrer"
+              target="_blank"
+              aria-label={`Open ${project.name} site`}
+            >
+              <ShovelIcon />
+              <CaretRight class="text-[var(--text-muted)]" size={18} weight="fill" />
+              <h3 class="text-lg leading-none font-semibold sm:text-xl">{project.name}</h3>
+            </a>
+            <p class="mt-6 text-left text-base leading-6 text-[var(--text-subtle)] sm:text-lg sm:leading-7 md:text-justify">
+              {project.description}
+            </p>
             {/* <Show when={commits().length}>
                 <div class="mt-8 overflow-hidden sm:mt-10">
                   <div class="space-y-2">
