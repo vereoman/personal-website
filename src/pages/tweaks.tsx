@@ -6,16 +6,10 @@ import { getMidiUrl, midiTracks } from "../config/midi-tracks";
 interface TweaksPageProps {
   selectedMidiTrackUrl: Accessor<string | null>;
   isMusicPlayerEnabled: Accessor<boolean>;
-  isBatteryStatusEnabled: Accessor<boolean>;
-  isGoogleSansCodeEnabled: Accessor<boolean>;
   isDarkModeEnabled: Accessor<boolean>;
   themePreference: Accessor<"auto" | "dark" | "light">;
-  isScrollSoundEnabled: Accessor<boolean>;
   onMusicPlayerToggle: () => void;
-  onBatteryStatusToggle: () => void;
-  onGoogleSansCodeToggle: () => void;
   onDarkModeToggle: () => void;
-  onScrollSoundToggle: () => void;
   onMidiTrackSelect: (url: string) => void;
 }
 
@@ -41,24 +35,9 @@ export function TweaksPage(props: TweaksPageProps) {
                 onToggle: props.onDarkModeToggle,
               },
               {
-                title: "Switch to monospaced font",
-                enabled: props.isGoogleSansCodeEnabled,
-                onToggle: props.onGoogleSansCodeToggle,
-              },
-              {
                 title: "Show the music player",
                 enabled: props.isMusicPlayerEnabled,
                 onToggle: props.onMusicPlayerToggle,
-              },
-              {
-                title: "Show battery level (Google Chrome only)",
-                enabled: props.isBatteryStatusEnabled,
-                onToggle: props.onBatteryStatusToggle,
-              },
-              {
-                title: "Enable sound on scroll",
-                enabled: props.isScrollSoundEnabled,
-                onToggle: props.onScrollSoundToggle,
               },
             ].map((tile) => (
               <SettingTile {...tile} />

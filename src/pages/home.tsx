@@ -10,7 +10,6 @@ import type { MidiPlaybackSnapshot } from "../lib/use-sound";
 
 interface HomePageProps {
   activeTrackUrl: Accessor<string | null>;
-  isBatteryStatusEnabled: Accessor<boolean>;
   isMusicPlayerInHeader: Accessor<boolean>;
   isMidiPlaying: Accessor<boolean>;
   midiPlayback: Accessor<MidiPlaybackSnapshot | null>;
@@ -21,7 +20,6 @@ export function HomePage(props: HomePageProps) {
   return (
     <div class="bg-background text-foreground flex min-h-screen flex-col px-4 sm:px-6">
       <Header
-        isBatteryStatusEnabled={props.isBatteryStatusEnabled}
         isMusicPlayerEnabled={props.isMusicPlayerInHeader}
         activeTrackUrl={props.activeTrackUrl}
         isPlaying={props.isMidiPlaying}

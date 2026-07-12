@@ -3,9 +3,8 @@ import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { getMidiUrl, midiTracks } from "./config/midi-tracks";
 import { haptics } from "./lib/use-haptics";
 import {
-  isAudioReady,
   getMidiPlaybackSnapshot,
-  playLensScrollClick,
+  playLensClick,
   soundPresetLabels,
   toggleMidiFile,
   type MidiPlaybackSnapshot,
@@ -19,13 +18,8 @@ import { TweaksPage } from "./pages/tweaks";
 const soundPresetStorageKey = "site:sound-preset";
 const musicPlayerStorageKey = "site:music-player-enabled";
 const selectedMidiTrackStorageKey = "site:selected-midi-track";
-const batteryStatusStorageKey = "site:battery-status-enabled";
-const scrollSoundEnabledStorageKey = "site:scroll-sound-enabled";
-const googleSansCodeStorageKey = "site:google-sans-code-enabled";
 const darkModeStorageKey = "site:dark-mode-enabled";
 const themePreferenceStorageKey = "site:theme-preference";
-const scrollLensClickDistance = 96;
-const scrollLensClickMinInterval = 58;
 
 type AppRoute = { name: "home" } | { name: "tweaks" } | { name: "not-found" };
 type ThemePreference = "auto" | "dark" | "light";
@@ -102,15 +96,6 @@ export default function App() {
   const initialMusicPlayerEnabled = getStoredBoolean(musicPlayerStorageKey);
   const [selectedPreset] = createSignal<SoundPreset>(getStoredSoundPreset());
   const [isMusicPlayerEnabled, setIsMusicPlayerEnabled] = createSignal(initialMusicPlayerEnabled);
-  const [isBatteryStatusEnabled, setIsBatteryStatusEnabled] = createSignal(
-    !initialMusicPlayerEnabled && getStoredBoolean(batteryStatusStorageKey),
-  );
-  const [isScrollSoundEnabled, setIsScrollSoundEnabled] = createSignal(
-    getStoredBoolean(scrollSoundEnabledStorageKey),
-  );
-  const [isGoogleSansCodeEnabled, setIsGoogleSansCodeEnabled] = createSignal(
-    getStoredBoolean(googleSansCodeStorageKey),
-  );
   const [themePreference, setThemePreference] = createSignal<ThemePreference>(
     getStoredThemePreference(),
   );
@@ -124,49 +109,12 @@ export default function App() {
   const isMusicPlayerInHeader = () => isMusicPlayerEnabled();
 
   createEffect(() => {
-    document.documentElement.classList.toggle("font-google-sans-code", isGoogleSansCodeEnabled());
-  });
-
-  createEffect(() => {
     document.documentElement.classList.toggle("light", !isDarkModeEnabled());
   });
 
   onMount(() => {
-    let wheelSinceClick = 0;
-    let lastLensClickAt = 0;
-
     const primeAudio = () => {
       void unlockAudio();
-    };
-    const handleWheel = (event: WheelEvent) => {
-      const delta = event.deltaY || event.deltaX;
-      if (!delta || !isScrollSoundEnabled() || !isAudioReady()) return;
-
-      const normalizedDelta =
-        event.deltaMode === WheelEvent.DOM_DELTA_LINE
-          ? delta * 16
-          : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
-            ? delta * window.innerHeight
-            : delta;
-
-      wheelSinceClick += Math.abs(normalizedDelta);
-
-      const now = performance.now();
-      if (
-        wheelSinceClick < scrollLensClickDistance ||
-        now - lastLensClickAt < scrollLensClickMinInterval
-      ) {
-        return;
-      }
-
-      const intensity = Math.min(wheelSinceClick / 420, 1);
-
-      playLensScrollClick({
-        direction: normalizedDelta > 0 ? 1 : -1,
-        intensity,
-      });
-      wheelSinceClick = 0;
-      lastLensClickAt = now;
     };
     const handleKeyDown = (event: KeyboardEvent) => {
       const hasTweaksModifier = usesMacCommandKey
@@ -195,7 +143,6 @@ export default function App() {
     window.addEventListener("pointerdown", primeAudio, { capture: true });
     window.addEventListener("keydown", primeAudio, { capture: true });
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("wheel", handleWheel, { passive: true });
 
     const progressInterval = window.setInterval(() => {
       setPlaybackTick(Date.now());
@@ -208,7 +155,6 @@ export default function App() {
       window.removeEventListener("pointerdown", primeAudio, { capture: true });
       window.removeEventListener("keydown", primeAudio, { capture: true });
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("wheel", handleWheel);
       window.clearInterval(progressInterval);
       window.clearInterval(themeInterval);
     });
@@ -221,7 +167,7 @@ export default function App() {
 
   const handlePress = () => {
     void unlockAudio().then((ready) => {
-      if (ready) playLensScrollClick({ direction: 1, intensity: 0.7 });
+      if (ready) playLensClick({ direction: 1, intensity: 0.7 });
     });
 
     haptics.click();
@@ -249,43 +195,6 @@ export default function App() {
 
     setIsMusicPlayerEnabled(nextValue);
     window.localStorage.setItem(musicPlayerStorageKey, String(nextValue));
-    if (nextValue) {
-      setIsBatteryStatusEnabled(false);
-      window.localStorage.setItem(batteryStatusStorageKey, "false");
-    }
-    haptics.click();
-  };
-
-  const handleBatteryStatusToggle = () => {
-    const nextValue = !isBatteryStatusEnabled();
-
-    setIsBatteryStatusEnabled(nextValue);
-    window.localStorage.setItem(batteryStatusStorageKey, String(nextValue));
-    if (nextValue) {
-      setIsMusicPlayerEnabled(false);
-      window.localStorage.setItem(musicPlayerStorageKey, "false");
-    }
-    haptics.click();
-  };
-
-  const handleScrollSoundToggle = () => {
-    const nextValue = !isScrollSoundEnabled();
-
-    setIsScrollSoundEnabled(nextValue);
-    window.localStorage.setItem(scrollSoundEnabledStorageKey, String(nextValue));
-    if (nextValue) {
-      void unlockAudio().then((ready) => {
-        if (ready) playLensScrollClick({ direction: 1, intensity: 0.7 });
-      });
-    }
-    haptics.click();
-  };
-
-  const handleGoogleSansCodeToggle = () => {
-    const nextValue = !isGoogleSansCodeEnabled();
-
-    setIsGoogleSansCodeEnabled(nextValue);
-    window.localStorage.setItem(googleSansCodeStorageKey, String(nextValue));
     haptics.click();
   };
 
@@ -302,17 +211,11 @@ export default function App() {
   if (route.name === "tweaks") {
     return (
       <TweaksPage
-        isBatteryStatusEnabled={isBatteryStatusEnabled}
         isMusicPlayerEnabled={isMusicPlayerEnabled}
-        isGoogleSansCodeEnabled={isGoogleSansCodeEnabled}
         isDarkModeEnabled={isDarkModeEnabled}
         themePreference={themePreference}
-        isScrollSoundEnabled={isScrollSoundEnabled}
-        onBatteryStatusToggle={handleBatteryStatusToggle}
         onMusicPlayerToggle={handleMusicPlayerToggle}
-        onGoogleSansCodeToggle={handleGoogleSansCodeToggle}
         onDarkModeToggle={handleDarkModeToggle}
-        onScrollSoundToggle={handleScrollSoundToggle}
         onMidiTrackSelect={handleMidiTrackSelect}
         selectedMidiTrackUrl={activeMidiUrl}
       />
@@ -326,7 +229,6 @@ export default function App() {
   return (
     <HomePage
       activeTrackUrl={activeMidiUrl}
-      isBatteryStatusEnabled={isBatteryStatusEnabled}
       isMusicPlayerInHeader={isMusicPlayerInHeader}
       isMidiPlaying={isMidiPlaying}
       midiPlayback={midiPlayback}

@@ -1,10 +1,7 @@
-import { For, Show, type Accessor } from "solid-js";
+import { Show, type Accessor } from "solid-js";
 
-import { createBatteryStatus } from "../lib/use-battery-status";
 import type { MidiPlaybackSnapshot } from "../lib/use-sound";
 import { MusicPlayer } from "./music-player";
-
-const batterySegments = Array.from({ length: 36 });
 
 function HeaderCorners() {
   return (
@@ -24,28 +21,11 @@ function HeaderCorners() {
 type HeaderProps = {
   activeTrackUrl: Accessor<string | null>;
   isMusicPlayerEnabled: Accessor<boolean>;
-  isBatteryStatusEnabled: Accessor<boolean>;
   isPlaying: Accessor<boolean>;
   midiPlayback: Accessor<MidiPlaybackSnapshot | null>;
 };
 
 export function Header(props: HeaderProps) {
-  const battery = createBatteryStatus(batterySegments.length);
-  const batteryStatus = () => (props.isBatteryStatusEnabled() ? battery.status() : undefined);
-
-  const batteryCellClass = (index: number) => {
-    const isWithinLevel = index < battery.litSegments();
-    const isChargingActive = battery.isCharging() && index < battery.chargingSegments();
-    const borderClass = index > 0 ? "border-l border-border" : "";
-
-    if (!isWithinLevel) return `bg-transparent ${borderClass}`;
-
-    const fillClass =
-      isChargingActive || !battery.isCharging() ? "bg-[var(--meter-fill)]" : "bg-card";
-
-    return `${fillClass} ${borderClass}`;
-  };
-
   return (
     <header class="relative z-10 w-full">
       <div class="border-border relative mx-auto h-[max(6rem,calc((100vh-660px)/2))] w-full max-w-5xl overflow-visible border-x sm:h-[max(8rem,calc((100vh-660px)/2))]">
@@ -55,23 +35,7 @@ export function Header(props: HeaderProps) {
         />
         <HeaderCorners />
 
-        <Show
-          when={props.isMusicPlayerEnabled()}
-          fallback={
-            <Show when={batteryStatus()}>
-              <output
-                aria-label={`Device battery ${battery.level()} percent${battery.isCharging() ? ", charging" : ""}`}
-                class="relative h-full"
-              >
-                <div aria-hidden="true" class="grid h-full grid-cols-36">
-                  <For each={batterySegments}>
-                    {(_, index) => <div class={batteryCellClass(index())} />}
-                  </For>
-                </div>
-              </output>
-            </Show>
-          }
-        >
+        <Show when={props.isMusicPlayerEnabled()}>
           <MusicPlayer
             activeTrackUrl={props.activeTrackUrl}
             isPlaying={props.isPlaying}

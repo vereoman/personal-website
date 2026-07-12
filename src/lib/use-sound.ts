@@ -59,7 +59,7 @@ interface NoiseOptions {
   highpassFrequency?: number;
 }
 
-interface LensScrollClickOptions {
+interface LensClickOptions {
   direction: 1 | -1;
   intensity?: number;
 }
@@ -355,10 +355,6 @@ function getAudioOutput(context: AudioContext): AudioNode {
   }
 
   return masterGainNode;
-}
-
-export function isAudioReady(): boolean {
-  return getCtx()?.state === "running";
 }
 
 export function unlockAudio(): Promise<boolean> {
@@ -692,7 +688,7 @@ function playNoiseTick(options: NoiseOptions = {}): boolean {
   return true;
 }
 
-export function playLensScrollClick(options: LensScrollClickOptions): boolean {
+export function playLensClick(options: LensClickOptions): boolean {
   const context = getCtx();
   if (!context || context.state !== "running") return false;
 

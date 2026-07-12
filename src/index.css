@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@300;400;500;700&family=Manrope:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -36,7 +36,6 @@
   --sidebar-ring: rgb(163, 163, 163);
   --font-sans: "Manrope", sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: "Google Sans Code", monospace;
   --radius: 0rem;
   --shadow-x: 4px;
   --shadow-y: 4px;
@@ -108,7 +107,6 @@ html.light {
   --sidebar-ring: oklch(0.3211 0 0);
   --font-sans: "Manrope", sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: "Fira Code", "Courier New", monospace;
   --radius: 0rem;
   --shadow-x: 4px;
   --shadow-y: 4px;
@@ -179,7 +177,6 @@ html.light {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -211,10 +208,6 @@ body {
   overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-}
-
-html.font-google-sans-code body {
-  font-family: "Google Sans Code", monospace;
 }
 
 html::-webkit-scrollbar,
