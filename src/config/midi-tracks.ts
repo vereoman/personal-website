@@ -6,6 +6,11 @@ export type MidiTrack = {
 
 export const midiTracks = [
   {
+    title: "I Was Made for Lovin' You",
+    artist: "KISS",
+    fileName: "i-was-made-for-loving-you.mid",
+  },
+  {
     title: "Sono Chi No Sadame",
     artist: "Hiroaki Tominaga",
     fileName: "sono-chi-no-sadame.mid",
@@ -14,21 +19,6 @@ export const midiTracks = [
     title: "Bloody Stream",
     artist: "Coda",
     fileName: "bloody-stream.mid",
-  },
-  {
-    title: "Stand Proud",
-    artist: "Jin Hashimoto",
-    fileName: "stand-proud.mid",
-  },
-  {
-    title: "Akuyaku Kyosokyoku",
-    artist: "Yugo Kanno",
-    fileName: "akuyaku-kyosokyoku.mid",
-  },
-  {
-    title: "Sono Chi No Kioku",
-    artist: "JO☆STARS",
-    fileName: "sono-chi-no-kioku.mid",
   },
   {
     title: "Uragirimono No Requiem",

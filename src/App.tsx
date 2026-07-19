@@ -18,11 +18,9 @@ import { TweaksPage } from "./pages/tweaks";
 const soundPresetStorageKey = "site:sound-preset";
 const musicPlayerStorageKey = "site:music-player-enabled";
 const selectedMidiTrackStorageKey = "site:selected-midi-track";
-const darkModeStorageKey = "site:dark-mode-enabled";
-const themePreferenceStorageKey = "site:theme-preference";
+const stealthModeStorageKey = "site:stealth-mode-enabled";
 
 type AppRoute = { name: "home" } | { name: "tweaks" } | { name: "not-found" };
-type ThemePreference = "auto" | "dark" | "light";
 
 function getRoute(pathname: string): AppRoute {
   if (pathname === "/") return { name: "home" };
@@ -49,37 +47,11 @@ function getStoredBoolean(key: string): boolean {
   return window.localStorage.getItem(key) === "true";
 }
 
-function isIndiaDaytime(date = new Date()): boolean {
-  const hour = Number(
-    new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      hour12: false,
-      timeZone: "Asia/Kolkata",
-    }).format(date),
-  );
-
-  return hour >= 7 && hour < 19;
-}
-
-function getStoredThemePreference(): ThemePreference {
-  if (typeof window === "undefined") return "auto";
-
-  const storedPreference = window.localStorage.getItem(themePreferenceStorageKey);
-
-  if (storedPreference === "auto" || storedPreference === "dark" || storedPreference === "light") {
-    return storedPreference;
-  }
-
-  const storedDarkMode = window.localStorage.getItem(darkModeStorageKey);
-
-  if (storedDarkMode === "true") return "dark";
-  if (storedDarkMode === "false") return "light";
-
-  return "auto";
-}
-
 function getStoredMidiTrackUrl(): string {
-  const fallbackUrl = getMidiUrl(midiTracks[0]);
+  const fallbackTrack = midiTracks.find(
+    (track) => track.fileName === "i-was-made-for-loving-you.mid",
+  );
+  const fallbackUrl = getMidiUrl(fallbackTrack ?? midiTracks[0]);
 
   if (typeof window === "undefined") return fallbackUrl;
 
@@ -96,12 +68,9 @@ export default function App() {
   const initialMusicPlayerEnabled = getStoredBoolean(musicPlayerStorageKey);
   const [selectedPreset] = createSignal<SoundPreset>(getStoredSoundPreset());
   const [isMusicPlayerEnabled, setIsMusicPlayerEnabled] = createSignal(initialMusicPlayerEnabled);
-  const [themePreference, setThemePreference] = createSignal<ThemePreference>(
-    getStoredThemePreference(),
+  const [isStealthModeEnabled, setIsStealthModeEnabled] = createSignal(
+    getStoredBoolean(stealthModeStorageKey),
   );
-  const [isIndiaDay, setIsIndiaDay] = createSignal(isIndiaDaytime());
-  const isDarkModeEnabled = () =>
-    themePreference() === "auto" ? !isIndiaDay() : themePreference() === "dark";
   const [activeMidiUrl, setActiveMidiUrl] = createSignal<string | null>(getStoredMidiTrackUrl());
   const [isMidiPlaying, setIsMidiPlaying] = createSignal(false);
   const [playbackTick, setPlaybackTick] = createSignal(Date.now());
@@ -109,7 +78,7 @@ export default function App() {
   const isMusicPlayerInHeader = () => isMusicPlayerEnabled();
 
   createEffect(() => {
-    document.documentElement.classList.toggle("light", !isDarkModeEnabled());
+    document.documentElement.classList.toggle("light", !isStealthModeEnabled());
   });
 
   onMount(() => {
@@ -147,16 +116,11 @@ export default function App() {
     const progressInterval = window.setInterval(() => {
       setPlaybackTick(Date.now());
     }, 250);
-    const themeInterval = window.setInterval(() => {
-      setIsIndiaDay(isIndiaDaytime());
-    }, 60_000);
-
     onCleanup(() => {
       window.removeEventListener("pointerdown", primeAudio, { capture: true });
       window.removeEventListener("keydown", primeAudio, { capture: true });
       window.removeEventListener("keydown", handleKeyDown);
       window.clearInterval(progressInterval);
-      window.clearInterval(themeInterval);
     });
   });
 
@@ -198,13 +162,11 @@ export default function App() {
     haptics.click();
   };
 
-  const handleDarkModeToggle = () => {
-    const nextPreference: ThemePreference =
-      themePreference() === "auto" ? "dark" : themePreference() === "dark" ? "light" : "auto";
+  const handleStealthModeToggle = () => {
+    const nextValue = !isStealthModeEnabled();
 
-    setThemePreference(nextPreference);
-    window.localStorage.setItem(themePreferenceStorageKey, nextPreference);
-    window.localStorage.setItem(darkModeStorageKey, String(nextPreference === "dark"));
+    setIsStealthModeEnabled(nextValue);
+    window.localStorage.setItem(stealthModeStorageKey, String(nextValue));
     haptics.click();
   };
 
@@ -212,10 +174,9 @@ export default function App() {
     return (
       <TweaksPage
         isMusicPlayerEnabled={isMusicPlayerEnabled}
-        isDarkModeEnabled={isDarkModeEnabled}
-        themePreference={themePreference}
+        isStealthModeEnabled={isStealthModeEnabled}
         onMusicPlayerToggle={handleMusicPlayerToggle}
-        onDarkModeToggle={handleDarkModeToggle}
+        onStealthModeToggle={handleStealthModeToggle}
         onMidiTrackSelect={handleMidiTrackSelect}
         selectedMidiTrackUrl={activeMidiUrl}
       />
@@ -233,6 +194,7 @@ export default function App() {
       isMidiPlaying={isMidiPlaying}
       midiPlayback={midiPlayback}
       onPress={handlePress}
+      usesMacCommandKey={usesMacCommandKey}
     />
   );
 }

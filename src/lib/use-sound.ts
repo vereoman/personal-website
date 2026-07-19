@@ -3,8 +3,11 @@ let masterGainNode: GainNode | null = null;
 let masterCompressorNode: DynamicsCompressorNode | null = null;
 let resumePromise: Promise<boolean> | null = null;
 let midiSources: AudioScheduledSourceNode[] = [];
+let midiSchedulerTimer: number | null = null;
 const midiPromises = new Map<string, Promise<ParsedMidiSong | null>>();
 const MASTER_OUTPUT_GAIN = 2;
+const MIDI_SCHEDULE_INTERVAL_MS = 250;
+const MIDI_SCHEDULE_AHEAD_SECONDS = 2;
 
 interface MidiPlaybackState {
   url: string;
@@ -434,6 +437,11 @@ function trackMidiSource(source: AudioScheduledSourceNode) {
 }
 
 function stopMidiSources() {
+  if (midiSchedulerTimer !== null) {
+    window.clearInterval(midiSchedulerTimer);
+    midiSchedulerTimer = null;
+  }
+
   for (const source of midiSources) {
     try {
       source.stop();
@@ -522,51 +530,76 @@ export async function playMidiFile(
   const durationSeconds = getMidiSongDuration(song);
   const startOffset = context.currentTime + 0.06;
   let scheduled = false;
+  let nextNoteIndex = song.notes.findIndex((note) => {
+    return midiTicksToSeconds(note.endTicks, song.ticksPerBeat, song.tempos) > offsetSeconds;
+  });
 
-  for (const note of song.notes) {
-    const noteStart = midiTicksToSeconds(note.startTicks, song.ticksPerBeat, song.tempos);
-    const noteEnd = midiTicksToSeconds(note.endTicks, song.ticksPerBeat, song.tempos);
-    if (noteEnd <= offsetSeconds) continue;
+  if (nextNoteIndex < 0) return false;
 
-    const startTime = startOffset + Math.max(noteStart - offsetSeconds, 0);
-    const endTime = startOffset + noteEnd - offsetSeconds;
-    const duration = endTime - startTime;
-    if (duration <= 0.015) continue;
+  const scheduleWindow = () => {
+    const scheduleThrough =
+      offsetSeconds + Math.max(context.currentTime - startOffset, 0) + MIDI_SCHEDULE_AHEAD_SECONDS;
 
-    if (note.channel === 9) {
-      scheduleMidiDrum(context, startTime, duration, note.velocity, note.pitch);
+    while (nextNoteIndex < song.notes.length) {
+      const note = song.notes[nextNoteIndex];
+      const noteStart = midiTicksToSeconds(note.startTicks, song.ticksPerBeat, song.tempos);
+      if (noteStart > scheduleThrough) break;
+
+      nextNoteIndex += 1;
+      const noteEnd = midiTicksToSeconds(note.endTicks, song.ticksPerBeat, song.tempos);
+      if (noteEnd <= offsetSeconds) continue;
+
+      const startTime = startOffset + Math.max(noteStart - offsetSeconds, 0);
+      const endTime = startOffset + noteEnd - offsetSeconds;
+      const duration = endTime - startTime;
+      if (duration <= 0.015) continue;
+
+      if (note.channel === 9) {
+        scheduleMidiDrum(context, startTime, duration, note.velocity, note.pitch);
+        scheduled = true;
+        continue;
+      }
+
+      const oscillator = context.createOscillator();
+      const gainNode = context.createGain();
+      const attack = voice.attack ?? 0.002;
+      const release = Math.min(voice.release ?? 0.08, duration * 0.65);
+      const releaseStart = Math.max(startTime + attack, endTime - release);
+      const peakGain = (voice.gain ?? 0.1) * (note.velocity / 127) * 0.32;
+
+      oscillator.type = voice.type ?? "sine";
+      oscillator.frequency.setValueAtTime(midiPitchToFrequency(note.pitch), startTime);
+      oscillator.detune.setValueAtTime(voice.detune ?? 0, startTime);
+
+      gainNode.gain.setValueAtTime(0.0001, startTime);
+      gainNode.gain.linearRampToValueAtTime(peakGain, startTime + attack);
+      gainNode.gain.setValueAtTime(Math.max(peakGain * 0.72, 0.0001), releaseStart);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, endTime);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(getAudioOutput(context));
+
+      oscillator.addEventListener("ended", () => {
+        oscillator.disconnect();
+        gainNode.disconnect();
+      });
+
+      trackMidiSource(oscillator);
+      oscillator.start(startTime);
+      oscillator.stop(endTime);
       scheduled = true;
-      continue;
     }
 
-    const oscillator = context.createOscillator();
-    const gainNode = context.createGain();
-    const attack = voice.attack ?? 0.002;
-    const release = Math.min(voice.release ?? 0.08, duration * 0.65);
-    const releaseStart = Math.max(startTime + attack, endTime - release);
-    const peakGain = (voice.gain ?? 0.1) * (note.velocity / 127) * 0.32;
+    if (nextNoteIndex >= song.notes.length && midiSchedulerTimer !== null) {
+      window.clearInterval(midiSchedulerTimer);
+      midiSchedulerTimer = null;
+    }
+  };
 
-    oscillator.type = voice.type ?? "sine";
-    oscillator.frequency.setValueAtTime(midiPitchToFrequency(note.pitch), startTime);
-    oscillator.detune.setValueAtTime(voice.detune ?? 0, startTime);
+  scheduleWindow();
 
-    gainNode.gain.setValueAtTime(0.0001, startTime);
-    gainNode.gain.linearRampToValueAtTime(peakGain, startTime + attack);
-    gainNode.gain.setValueAtTime(Math.max(peakGain * 0.72, 0.0001), releaseStart);
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, endTime);
-
-    oscillator.connect(gainNode);
-    gainNode.connect(getAudioOutput(context));
-
-    oscillator.addEventListener("ended", () => {
-      oscillator.disconnect();
-      gainNode.disconnect();
-    });
-
-    trackMidiSource(oscillator);
-    oscillator.start(startTime);
-    oscillator.stop(endTime);
-    scheduled = true;
+  if (nextNoteIndex < song.notes.length) {
+    midiSchedulerTimer = window.setInterval(scheduleWindow, MIDI_SCHEDULE_INTERVAL_MS);
   }
 
   if (scheduled) {

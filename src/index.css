@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@400;500;600&family=Manrope:wght@300;400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -35,6 +35,7 @@
   --sidebar-border: rgb(23, 23, 23);
   --sidebar-ring: rgb(163, 163, 163);
   --font-sans: "Manrope", sans-serif;
+  --font-mono: "Google Sans Code", monospace;
   --font-serif: Georgia, serif;
   --radius: 0rem;
   --shadow-x: 4px;
@@ -177,6 +178,7 @@ html.light {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
