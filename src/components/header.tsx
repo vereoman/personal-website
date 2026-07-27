@@ -19,9 +19,7 @@ function HeaderCorners() {
 }
 
 type HeaderProps = {
-  activeTrackUrl: Accessor<string | null>;
   isMusicPlayerEnabled: Accessor<boolean>;
-  isPlaying: Accessor<boolean>;
   midiPlayback: Accessor<MidiPlaybackSnapshot | null>;
 };
 
@@ -36,11 +34,7 @@ export function Header(props: HeaderProps) {
         <HeaderCorners />
 
         <Show when={props.isMusicPlayerEnabled()}>
-          <MusicPlayer
-            activeTrackUrl={props.activeTrackUrl}
-            isPlaying={props.isPlaying}
-            midiPlayback={props.midiPlayback}
-          />
+          <MusicPlayer midiPlayback={props.midiPlayback} />
         </Show>
       </div>
     </header>

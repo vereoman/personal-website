@@ -1,7 +1,6 @@
 import { createEffect, createSignal, onCleanup, onMount } from "solid-js";
 
-import { customFavicons } from "./config/custom-favicons";
-import { getMidiUrl, midiTracks } from "./config/midi-tracks";
+import { midiTrackUrl } from "./config/midi-tracks";
 import { haptics } from "./lib/use-haptics";
 import {
   getMidiPlaybackSnapshot,
@@ -18,10 +17,8 @@ import { TweaksPage } from "./pages/tweaks";
 
 const soundPresetStorageKey = "site:sound-preset";
 const musicPlayerStorageKey = "site:music-player-enabled";
-const selectedMidiTrackStorageKey = "site:selected-midi-track";
-const stealthModeStorageKey = "site:stealth-mode-enabled";
-const customFaviconsStorageKey = "site:custom-favicons-enabled";
-const selectedCustomFaviconStorageKey = "site:selected-custom-favicon";
+const darkModeStorageKey = "site:dark-mode-enabled";
+const previousDarkModeStorageKey = "site:stealth-mode-enabled";
 
 type AppRoute = { name: "home" } | { name: "tweaks" } | { name: "not-found" };
 
@@ -50,39 +47,13 @@ function getStoredBoolean(key: string): boolean {
   return window.localStorage.getItem(key) === "true";
 }
 
-function getStoredMidiTrackUrl(): string {
-  const fallbackTrack = midiTracks.find(
-    (track) => track.fileName === "i-was-made-for-loving-you.mid",
+function getStoredDarkMode(): boolean {
+  if (typeof window === "undefined") return false;
+
+  return (
+    (window.localStorage.getItem(darkModeStorageKey) ??
+      window.localStorage.getItem(previousDarkModeStorageKey)) === "true"
   );
-  const fallbackUrl = getMidiUrl(fallbackTrack ?? midiTracks[0]);
-
-  if (typeof window === "undefined") return fallbackUrl;
-
-  const storedUrl = window.localStorage.getItem(selectedMidiTrackStorageKey);
-
-  return storedUrl && midiTracks.some((track) => getMidiUrl(track) === storedUrl)
-    ? storedUrl
-    : fallbackUrl;
-}
-
-function getStoredCustomFaviconId(): string | null {
-  if (typeof window === "undefined") return customFavicons[0]?.id ?? null;
-
-  const storedId = window.localStorage.getItem(selectedCustomFaviconStorageKey);
-
-  return customFavicons.some((favicon) => favicon.id === storedId)
-    ? storedId
-    : (customFavicons[0]?.id ?? null);
-}
-
-function getFaviconType(src: string): string | null {
-  const extension = src.split(/[?#]/, 1)[0].split(".").pop()?.toLowerCase();
-
-  if (extension === "svg") return "image/svg+xml";
-  if (extension === "png") return "image/png";
-  if (extension === "ico") return "image/x-icon";
-
-  return null;
 }
 
 export default function App() {
@@ -91,44 +62,13 @@ export default function App() {
   const initialMusicPlayerEnabled = getStoredBoolean(musicPlayerStorageKey);
   const [selectedPreset] = createSignal<SoundPreset>(getStoredSoundPreset());
   const [isMusicPlayerEnabled, setIsMusicPlayerEnabled] = createSignal(initialMusicPlayerEnabled);
-  const [isStealthModeEnabled, setIsStealthModeEnabled] = createSignal(
-    getStoredBoolean(stealthModeStorageKey),
-  );
-  const [areCustomFaviconsEnabled, setAreCustomFaviconsEnabled] = createSignal(
-    getStoredBoolean(customFaviconsStorageKey),
-  );
-  const [selectedCustomFaviconId, setSelectedCustomFaviconId] = createSignal<string | null>(
-    getStoredCustomFaviconId(),
-  );
-  const [activeMidiUrl, setActiveMidiUrl] = createSignal<string | null>(getStoredMidiTrackUrl());
-  const [isMidiPlaying, setIsMidiPlaying] = createSignal(false);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = createSignal(getStoredDarkMode());
   const [playbackTick, setPlaybackTick] = createSignal(Date.now());
   const route = getRoute(window.location.pathname);
   const isMusicPlayerInHeader = () => isMusicPlayerEnabled();
 
   createEffect(() => {
-    const isDark = isStealthModeEnabled();
-    const selectedCustomFavicon = customFavicons.find(
-      (favicon) => favicon.id === selectedCustomFaviconId(),
-    );
-
-    document.documentElement.classList.toggle("light", !isDark);
-
-    const favicon = document.querySelector<HTMLLinkElement>("#favicon");
-    if (favicon) {
-      const faviconSrc =
-        areCustomFaviconsEnabled() && selectedCustomFavicon
-          ? selectedCustomFavicon.src
-          : isDark
-            ? "/favicon-dark.svg"
-            : "/favicon.svg";
-
-      favicon.href = faviconSrc;
-
-      const faviconType = getFaviconType(faviconSrc);
-      if (faviconType) favicon.type = faviconType;
-      else favicon.removeAttribute("type");
-    }
+    document.documentElement.classList.toggle("light", !isDarkModeEnabled());
   });
 
   onMount(() => {
@@ -156,7 +96,7 @@ export default function App() {
       if (!isMusicPlayerEnabled() || isTyping || event.code !== "Space") return;
 
       event.preventDefault();
-      handleMidiToggle(activeMidiUrl() ?? getMidiUrl(midiTracks[0]));
+      handleMidiToggle();
     };
 
     window.addEventListener("pointerdown", primeAudio, { capture: true });
@@ -187,20 +127,9 @@ export default function App() {
     haptics.click();
   };
 
-  const handleMidiToggle = (url: string) => {
-    void toggleMidiFile(url, selectedPreset()).then((status) => {
-      if (status === "failed") return;
+  const handleMidiToggle = () => {
+    void toggleMidiFile(midiTrackUrl, selectedPreset());
 
-      setActiveMidiUrl(url);
-      setIsMidiPlaying(status === "playing");
-    });
-
-    haptics.click();
-  };
-
-  const handleMidiTrackSelect = (url: string) => {
-    setActiveMidiUrl(url);
-    window.localStorage.setItem(selectedMidiTrackStorageKey, url);
     haptics.click();
   };
 
@@ -212,49 +141,21 @@ export default function App() {
     haptics.click();
   };
 
-  const handleStealthModeToggle = () => {
-    const nextValue = !isStealthModeEnabled();
+  const handleDarkModeToggle = () => {
+    const nextValue = !isDarkModeEnabled();
 
-    setIsStealthModeEnabled(nextValue);
-    window.localStorage.setItem(stealthModeStorageKey, String(nextValue));
-    haptics.click();
-  };
-
-  const handleCustomFaviconsToggle = () => {
-    const nextValue = !areCustomFaviconsEnabled();
-    const fallbackFaviconId = customFavicons[0]?.id ?? null;
-
-    if (nextValue && !selectedCustomFaviconId() && fallbackFaviconId) {
-      setSelectedCustomFaviconId(fallbackFaviconId);
-      window.localStorage.setItem(selectedCustomFaviconStorageKey, fallbackFaviconId);
-    }
-
-    setAreCustomFaviconsEnabled(nextValue);
-    window.localStorage.setItem(customFaviconsStorageKey, String(nextValue));
-    haptics.click();
-  };
-
-  const handleCustomFaviconSelect = (id: string) => {
-    if (!customFavicons.some((favicon) => favicon.id === id)) return;
-
-    setSelectedCustomFaviconId(id);
-    window.localStorage.setItem(selectedCustomFaviconStorageKey, id);
+    setIsDarkModeEnabled(nextValue);
+    window.localStorage.setItem(darkModeStorageKey, String(nextValue));
     haptics.click();
   };
 
   if (route.name === "tweaks") {
     return (
       <TweaksPage
-        areCustomFaviconsEnabled={areCustomFaviconsEnabled}
+        isDarkModeEnabled={isDarkModeEnabled}
         isMusicPlayerEnabled={isMusicPlayerEnabled}
-        isStealthModeEnabled={isStealthModeEnabled}
-        onCustomFaviconSelect={handleCustomFaviconSelect}
-        onCustomFaviconsToggle={handleCustomFaviconsToggle}
+        onDarkModeToggle={handleDarkModeToggle}
         onMusicPlayerToggle={handleMusicPlayerToggle}
-        onStealthModeToggle={handleStealthModeToggle}
-        onMidiTrackSelect={handleMidiTrackSelect}
-        selectedCustomFaviconId={selectedCustomFaviconId}
-        selectedMidiTrackUrl={activeMidiUrl}
       />
     );
   }
@@ -265,9 +166,7 @@ export default function App() {
 
   return (
     <HomePage
-      activeTrackUrl={activeMidiUrl}
       isMusicPlayerInHeader={isMusicPlayerInHeader}
-      isMidiPlaying={isMidiPlaying}
       midiPlayback={midiPlayback}
       onPress={handlePress}
       usesMacCommandKey={usesMacCommandKey}

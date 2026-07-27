@@ -1,27 +1,19 @@
 import { For, type Accessor } from "solid-js";
 
-import { getMidiUrl, midiTracks } from "../config/midi-tracks";
+import { midiTrackUrl } from "../config/midi-tracks";
 import type { MidiPlaybackSnapshot } from "../lib/use-sound";
 
 const progressSegments = Array.from({ length: 36 });
 
 type MusicPlayerProps = {
-  activeTrackUrl: Accessor<string | null>;
-  isPlaying: Accessor<boolean>;
   midiPlayback: Accessor<MidiPlaybackSnapshot | null>;
 };
 
 export function MusicPlayer(props: MusicPlayerProps) {
-  const currentTrack = () => {
-    return (
-      midiTracks.find((track) => getMidiUrl(track) === props.activeTrackUrl()) ?? midiTracks[0]
-    );
-  };
-  const currentTrackUrl = () => getMidiUrl(currentTrack());
   const progressRatio = () => {
     const playback = props.midiPlayback();
 
-    if (!playback || playback.url !== currentTrackUrl() || playback.durationSeconds <= 0) {
+    if (!playback || playback.url !== midiTrackUrl || playback.durationSeconds <= 0) {
       return 0;
     }
 

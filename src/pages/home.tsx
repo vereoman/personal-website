@@ -9,9 +9,7 @@ import { Work } from "../components/work";
 import type { MidiPlaybackSnapshot } from "../lib/use-sound";
 
 interface HomePageProps {
-  activeTrackUrl: Accessor<string | null>;
   isMusicPlayerInHeader: Accessor<boolean>;
-  isMidiPlaying: Accessor<boolean>;
   midiPlayback: Accessor<MidiPlaybackSnapshot | null>;
   onPress: () => void;
   usesMacCommandKey: boolean;
@@ -22,8 +20,6 @@ export function HomePage(props: HomePageProps) {
     <div class="bg-background text-foreground flex min-h-screen flex-col px-4 sm:px-6">
       <Header
         isMusicPlayerEnabled={props.isMusicPlayerInHeader}
-        activeTrackUrl={props.activeTrackUrl}
-        isPlaying={props.isMidiPlaying}
         midiPlayback={props.midiPlayback}
       />
       <Hero />
