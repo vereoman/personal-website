@@ -78,7 +78,12 @@ export default function App() {
   const isMusicPlayerInHeader = () => isMusicPlayerEnabled();
 
   createEffect(() => {
-    document.documentElement.classList.toggle("light", !isStealthModeEnabled());
+    const isDark = isStealthModeEnabled();
+
+    document.documentElement.classList.toggle("light", !isDark);
+
+    const favicon = document.querySelector<HTMLLinkElement>("#favicon");
+    if (favicon) favicon.href = isDark ? "/favicon-dark.svg" : "/favicon.svg";
   });
 
   onMount(() => {
