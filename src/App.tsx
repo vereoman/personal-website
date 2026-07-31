@@ -68,7 +68,7 @@ export default function App() {
   const isMusicPlayerInHeader = () => isMusicPlayerEnabled();
 
   createEffect(() => {
-    document.documentElement.classList.toggle("light", !isDarkModeEnabled());
+    document.documentElement.classList.toggle("dark", isDarkModeEnabled());
   });
 
   onMount(() => {

@@ -1,9 +1,8 @@
 // import { useQuery } from "@tanstack/solid-query";
-import { CaretRight } from "phosphor-solid";
 // import { For, Show } from "solid-js";
 
 import { getProjectBySlug } from "../config/projects";
-import { SidePattern } from "./side-pattern";
+// import { SidePattern } from "./side-pattern";
 // import { fetchCommits, githubCacheTimes, githubQueryKeys } from "../lib/github";
 
 type InteractiveProps = {
@@ -16,21 +15,6 @@ const project = {
     "An interactive town-building base for shaping a small place through simple systems and readable state.",
 };
 
-function ShovelIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      width="32"
-      height="32"
-      viewBox="0 0 256 256"
-      fill="currentColor"
-    >
-      <path d="M245.66,69.66a8,8,0,0,1-11.32,0L216,51.31l-71,71L133.66,111l71-71L186.34,21.66a8,8,0,0,1,11.32-11.32l48,48A8,8,0,0,1,245.66,69.66ZM88,176a8,8,0,0,1-5.66-13.66L133.66,111,99.31,76.68a16,16,0,0,0-22.62,0l-56,56A15.89,15.89,0,0,0,16,144v80a16,16,0,0,0,16,16h80a15.86,15.86,0,0,0,11.31-4.69l56-56a16,16,0,0,0,0-22.62L145,122.34,93.66,173.66A8,8,0,0,1,88,176Z" />
-    </svg>
-  );
-}
-
 export function Project1(props: InteractiveProps) {
   // const commitsQuery = useQuery(() => ({
   //   queryKey: githubQueryKeys.commits(project, project.branch),
@@ -40,13 +24,13 @@ export function Project1(props: InteractiveProps) {
   // const commits = () => commitsQuery.data?.slice(0, 4) ?? [];
 
   return (
-    <section class="relative w-full">
+    <section class="section-tone-project relative w-full">
       <div
         id="project-1"
         class="border-border bg-background relative mx-auto grid w-full max-w-5xl content-center border-x border-b px-8 py-14 sm:px-12 md:h-[min(66vw,660px)] md:min-h-[360px] md:px-20 lg:px-24 md:py-0"
         onPointerDown={props.onPress}
       >
-        <SidePattern />
+        {/* <SidePattern /> */}
         <span
           aria-hidden="true"
           class="bg-border pointer-events-none absolute z-10 bottom-[-1px] left-1/2 h-px w-screen -translate-x-1/2"
@@ -74,8 +58,6 @@ export function Project1(props: InteractiveProps) {
               target="_blank"
               aria-label={`Open ${project.name} site`}
             >
-              <ShovelIcon />
-              <CaretRight class="text-[var(--text-muted)]" size={18} weight="fill" />
               <h3 class="text-lg leading-none font-semibold sm:text-xl">{project.name}</h3>
             </a>
             <p class="mt-6 text-left text-base leading-6 text-[var(--text-subtle)] sm:text-lg sm:leading-7 md:text-justify">

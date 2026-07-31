@@ -25,7 +25,7 @@ type HeaderProps = {
 
 export function Header(props: HeaderProps) {
   return (
-    <header class="relative z-10 w-full">
+    <header class="section-tone-header relative z-10 w-full">
       <div class="border-border relative mx-auto h-[max(6rem,calc((100vh-660px)/2))] w-full max-w-5xl overflow-visible border-x sm:h-[max(8rem,calc((100vh-660px)/2))]">
         <span
           aria-hidden="true"

@@ -16,7 +16,7 @@ interface HomePageProps {
 
 export function HomePage(props: HomePageProps) {
   return (
-    <div class="bg-background text-foreground flex min-h-screen flex-col px-4 sm:px-6">
+    <div class="bg-background text-foreground flex min-h-screen flex-col">
       <Header
         isMusicPlayerEnabled={props.isMusicPlayerInHeader}
         midiPlayback={props.midiPlayback}

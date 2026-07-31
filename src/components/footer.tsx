@@ -4,7 +4,7 @@ interface FooterProps {
 
 export function Footer(props: FooterProps) {
   return (
-    <footer class="w-full">
+    <footer class="section-tone-footer w-full">
       <div class="border-border relative mx-auto flex h-[max(6rem,calc((100vh-660px)/2))] w-full max-w-5xl items-center justify-end border-x px-6 sm:h-[max(8rem,calc((100vh-660px)/2))] sm:px-8">
         <span
           aria-hidden="true"

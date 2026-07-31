@@ -1,4 +1,4 @@
-import { SidePattern } from "./side-pattern";
+// import { SidePattern } from "./side-pattern";
 
 type InteractiveProps = {
   onPress: () => void;
@@ -6,13 +6,13 @@ type InteractiveProps = {
 
 export function About(props: InteractiveProps) {
   return (
-    <section class="w-full">
+    <section class="section-tone-about w-full">
       <div
         id="about"
         class="border-border bg-background relative mx-auto grid w-full max-w-5xl content-center border-x border-t px-8 py-14 sm:px-12 md:h-[min(66vw,660px)] md:min-h-[360px] md:px-20 lg:px-24 md:py-0"
         onPointerDown={props.onPress}
       >
-        <SidePattern />
+        {/* <SidePattern /> */}
         <span
           aria-hidden="true"
           class="bg-border pointer-events-none absolute z-10 top-[-1px] left-1/2 h-px w-screen -translate-x-1/2"
