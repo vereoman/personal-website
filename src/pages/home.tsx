@@ -3,7 +3,6 @@ import type { Accessor } from "solid-js";
 import { About } from "../components/about";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
-import { Hero } from "../components/hero";
 import { Project1 } from "../components/project-1";
 import { Work } from "../components/work";
 import type { MidiPlaybackSnapshot } from "../lib/use-sound";
@@ -22,7 +21,7 @@ export function HomePage(props: HomePageProps) {
         isMusicPlayerEnabled={props.isMusicPlayerInHeader}
         midiPlayback={props.midiPlayback}
       />
-      <Hero />
+      <h1 class="sr-only">Arman Kar, Software Developer</h1>
       <About onPress={props.onPress} />
       <Work onPress={props.onPress} />
       <Project1 onPress={props.onPress} />

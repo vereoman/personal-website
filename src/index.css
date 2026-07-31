@@ -61,16 +61,8 @@
   --grid-surface: rgb(255 255 255 / 0.06);
   --meter-fill: rgb(23 23 23 / 0.5);
   --corner: rgb(163, 163, 163);
-  --pattern-c1: #000;
-  --pattern-c2: #0a0a0a;
-  --hero-core: #000;
-  --hero-vignette: rgba(0, 0, 0, 0.8);
-  --hero-ring-outer: rgba(201, 24, 120, 0.88);
-  --hero-ring-outer-soft: rgba(138, 16, 160, 0.7);
-  --hero-ring-middle: rgba(38, 64, 220, 0.92);
-  --hero-ring-middle-soft: rgba(80, 48, 200, 0.76);
-  --hero-ring-inner: rgba(0, 200, 168, 0.9);
-  --hero-ring-inner-soft: rgba(0, 168, 204, 0.76);
+  --rail-pattern-1: rgb(10, 10, 10);
+  --rail-pattern-2: rgb(38, 38, 38);
 }
 
 html.light {
@@ -132,16 +124,8 @@ html.light {
   --grid-surface: oklch(0.683 0 0 / 0.38);
   --meter-fill: oklch(0.5132 0.0198 229.3153 / 0.22);
   --corner: oklch(0.3211 0 0);
-  --pattern-c1: oklch(0.8893 0.0052 106.5041);
-  --pattern-c2: oklch(0.8517 0.007 106.5464);
-  --hero-core: oklch(0.8893 0.0052 106.5041);
-  --hero-vignette: oklch(0.8893 0.0052 106.5041 / 0.72);
-  --hero-ring-outer: rgb(181 91 54 / 0.68);
-  --hero-ring-outer-soft: rgb(207 127 80 / 0.46);
-  --hero-ring-middle: rgb(43 88 115 / 0.64);
-  --hero-ring-middle-soft: rgb(76 128 143 / 0.42);
-  --hero-ring-inner: rgb(105 139 54 / 0.62);
-  --hero-ring-inner-soft: rgb(147 171 75 / 0.4);
+  --rail-pattern-1: oklch(0.8668 0.0062 106.529);
+  --rail-pattern-2: oklch(0.7652 0 0);
 }
 
 @theme inline {
@@ -217,23 +201,24 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+.rail-pattern {
+  --s: 56px; /* control the size */
+  --c1: var(--rail-pattern-1);
+  --c2: var(--rail-pattern-2);
+
+  --_s: calc(2 * var(--s)) calc(2 * var(--s));
+  --_g: 35.36% 35.36% at;
+  --_c: #0000 66%, var(--c2) 68% 70%, #0000 72%;
+  background:
+    radial-gradient(var(--_g) 100% 25%, var(--_c)) var(--s) var(--s) / var(--_s),
+    radial-gradient(var(--_g) 0 75%, var(--_c)) var(--s) var(--s) / var(--_s),
+    radial-gradient(var(--_g) 100% 25%, var(--_c)) 0 0 / var(--_s),
+    radial-gradient(var(--_g) 0 75%, var(--_c)) 0 0 / var(--_s),
+    repeating-conic-gradient(var(--c1) 0 25%, #0000 0 50%) 0 0 / var(--_s),
+    radial-gradient(var(--_c)) 0 calc(var(--s) / 2) / var(--s) var(--s) var(--c1);
+}
+
 ::selection {
   background: var(--primary);
   color: var(--primary-foreground);
-}
-
-.site-pattern {
-  --s: 150px;
-  --_g:
-    var(--pattern-c1) 0% 5%, var(--pattern-c2) 6% 15%, var(--pattern-c1) 16% 25%,
-    var(--pattern-c2) 26% 35%, var(--pattern-c1) 36% 45%, var(--pattern-c2) 46% 55%,
-    var(--pattern-c1) 56% 65%, var(--pattern-c2) 66% 75%, var(--pattern-c1) 76% 85%,
-    var(--pattern-c2) 86% 95%, #0000 96%;
-  background:
-    radial-gradient(50% 50% at 100% 0, var(--_g)),
-    radial-gradient(50% 50% at 0 100%, var(--_g)),
-    radial-gradient(50% 50%, var(--_g)),
-    radial-gradient(50% 50%, var(--_g)) calc(var(--s) / 2) calc(var(--s) / 2),
-    var(--pattern-c1);
-  background-size: var(--s) var(--s);
 }

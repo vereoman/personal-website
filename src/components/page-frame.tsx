@@ -1,5 +1,7 @@
 import type { JSX } from "solid-js";
 
+import { SidePattern } from "./side-pattern";
+
 interface PageFrameProps {
   children: JSX.Element;
   clean?: boolean;
@@ -21,24 +23,23 @@ export function PageFrame(props: PageFrameProps) {
   return (
     <main class="bg-background text-foreground relative flex min-h-screen items-center px-4 py-20 sm:px-6 sm:py-28">
       <section class="relative w-full">
-        <div class="site-pattern pointer-events-none absolute inset-y-0 left-1/2 w-screen -translate-x-1/2" />
-
         <div class="border-border bg-background relative mx-auto flex w-full max-w-5xl flex-col border-x border-y md:min-h-[660px]">
+          <SidePattern />
           <span
             aria-hidden="true"
-            class="bg-border pointer-events-none absolute top-[-1px] left-1/2 h-px w-screen -translate-x-1/2"
+            class="bg-border pointer-events-none absolute z-10 top-[-1px] left-1/2 h-px w-screen -translate-x-1/2"
           />
           <span
             aria-hidden="true"
-            class="bg-border pointer-events-none absolute bottom-[-1px] left-1/2 h-px w-screen -translate-x-1/2"
+            class="bg-border pointer-events-none absolute z-10 bottom-[-1px] left-1/2 h-px w-screen -translate-x-1/2"
           />
           <span
             aria-hidden="true"
-            class="bg-border pointer-events-none absolute top-1/2 left-[-1px] h-screen w-px -translate-y-1/2"
+            class="bg-border pointer-events-none absolute z-10 top-1/2 left-[-1px] h-screen w-px -translate-y-1/2"
           />
           <span
             aria-hidden="true"
-            class="bg-border pointer-events-none absolute top-1/2 right-[-1px] h-screen w-px -translate-y-1/2"
+            class="bg-border pointer-events-none absolute z-10 top-1/2 right-[-1px] h-screen w-px -translate-y-1/2"
           />
           <span aria-hidden="true" class="pointer-events-none absolute top-0 left-0 z-10">
             <span class="absolute top-[-1px] left-[-1px] h-px w-2 bg-[var(--corner)]" />
