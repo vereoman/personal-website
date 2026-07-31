@@ -63,6 +63,7 @@
   --corner: rgb(163, 163, 163);
   --rail-pattern-1: rgb(10, 10, 10);
   --rail-pattern-2: rgb(38, 38, 38);
+  --frame-max: 64rem; /* keep in sync with the frame's max-w-5xl */
 }
 
 html.light {
@@ -202,20 +203,32 @@ body::-webkit-scrollbar {
 }
 
 .rail-pattern {
-  --s: 56px; /* control the size */
+  --cols: 3; /* L-shape tiles across the rail */
+  --rows: 6; /* L-shape tiles down the rail */
   --c1: var(--rail-pattern-1);
   --c2: var(--rail-pattern-2);
 
-  --_s: calc(2 * var(--s)) calc(2 * var(--s));
-  --_g: 35.36% 35.36% at;
-  --_c: #0000 66%, var(--c2) 68% 70%, #0000 72%;
+  /* space between the frame edge and the viewport edge */
+  --rail-space: max(0px, (100vw - var(--frame-max)) / 2);
+  /* tile width divides the rail exactly, so no partial column is left over */
+  --s: calc(var(--rail-space) / var(--cols));
+
+  width: var(--rail-space);
+  height: 100%;
+
+  /*
+   * Rows divide the rail height exactly via a percentage background-size, so no
+   * partial row is left over either. The second layer has to sit 3/4 of a tile
+   * lower; as a background-position percentage p that offset is p*(H - H/rows),
+   * which solves to 75% / (rows - 1) regardless of the actual height.
+   */
+  --_g: at calc(100% / 3) 25%, #0000 75%,;
+  --_y: calc(75% / (var(--rows) - 1));
   background:
-    radial-gradient(var(--_g) 100% 25%, var(--_c)) var(--s) var(--s) / var(--_s),
-    radial-gradient(var(--_g) 0 75%, var(--_c)) var(--s) var(--s) / var(--_s),
-    radial-gradient(var(--_g) 100% 25%, var(--_c)) 0 0 / var(--_s),
-    radial-gradient(var(--_g) 0 75%, var(--_c)) 0 0 / var(--_s),
-    repeating-conic-gradient(var(--c1) 0 25%, #0000 0 50%) 0 0 / var(--_s),
-    radial-gradient(var(--_c)) 0 calc(var(--s) / 2) / var(--s) var(--s) var(--c1);
+    conic-gradient(var(--_g) var(--c1) 0),
+    conic-gradient(var(--_g) var(--c2) 0) 0 var(--_y),
+    repeating-conic-gradient(at calc(200% / 3), var(--c1) 0 25%, var(--c2) 0 50%);
+  background-size: var(--s) calc(100% / var(--rows));
 }
 
 ::selection {
