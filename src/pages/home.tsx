@@ -11,7 +11,6 @@ interface HomePageProps {
   isMusicPlayerInHeader: Accessor<boolean>;
   midiPlayback: Accessor<MidiPlaybackSnapshot | null>;
   onPress: () => void;
-  usesMacCommandKey: boolean;
 }
 
 export function HomePage(props: HomePageProps) {
@@ -25,7 +24,7 @@ export function HomePage(props: HomePageProps) {
       <About onPress={props.onPress} />
       <Work onPress={props.onPress} />
       <Project1 onPress={props.onPress} />
-      <Footer usesMacCommandKey={props.usesMacCommandKey} />
+      <Footer />
     </div>
   );
 }

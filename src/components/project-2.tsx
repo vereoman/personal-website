@@ -4,7 +4,7 @@ import { For, Show } from "solid-js";
 
 import { getProjectBySlug } from "../config/projects";
 import { fetchCommits, githubCacheTimes, githubQueryKeys } from "../lib/github";
-import { SidePattern } from "./side-pattern";
+import { CellRail } from "./cell-rail";
 
 type InteractiveProps = {
   onPress: () => void;
@@ -43,10 +43,11 @@ export function Project2(props: InteractiveProps) {
     <section class="relative w-full">
       <div
         id="project-2"
-        class="border-border bg-background relative mx-auto grid w-full max-w-5xl content-center border-x border-b px-8 py-14 sm:px-12 md:h-[min(66vw,660px)] md:min-h-[360px] md:px-20 lg:px-24 md:py-0"
+        class="border-border bg-background relative mx-auto grid w-full max-w-[var(--frame-w)] content-center border-x border-b px-8 py-14 sm:px-12 md:h-[var(--section-h)] md:min-h-[360px] md:px-20 lg:px-24 md:py-0"
         onPointerDown={props.onPress}
       >
-        <SidePattern />
+        <CellRail side="left" />
+        <CellRail side="right" />
         <span
           aria-hidden="true"
           class="bg-border pointer-events-none absolute z-10 bottom-[-1px] left-1/2 h-px w-screen -translate-x-1/2"

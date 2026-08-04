@@ -69,6 +69,33 @@
   --section-4: #00ccdd;
   --section-5: #7cf5ff;
   --frame-max: 64rem; /* keep in sync with the frame's max-w-5xl */
+
+  /*
+   * Frame bands. A centre section is --section-h tall, so the top/bottom bands
+   * take the leftover half-viewport each: that is --band-size. The side panels
+   * are then pinned to the SAME measure (--band) and the frame widens to fill
+   * whatever is left (--frame-w), so every band around the frame is identical.
+   * Below 64rem there is no room for panels, so --band stays 0 and the frame
+   * runs edge to edge; above it the panel is capped so the frame keeps 48rem.
+   */
+  --band-floor: 6rem;
+  --section-h: min(66vw, 660px);
+  --band-size: max(var(--band-floor), (100vh - var(--section-h)) / 2);
+  --band: 0px;
+  --frame-w: calc(100vw - 2 * var(--band));
+  --gutter: max(0px, (100vw - var(--frame-max)) / 2);
+}
+
+@media (width >= 40rem) {
+  :root {
+    --band-floor: 8rem;
+  }
+}
+
+@media (width >= 64rem) {
+  :root {
+    --band: min(var(--band-size), (100vw - 48rem) / 2);
+  }
 }
 
 html.dark {
@@ -160,26 +187,55 @@ html.dark {
 .section-tone-work,
 .section-tone-project,
 .section-tone-footer {
-  --background: var(--section-color);
-  --rail-pattern-1: color-mix(in srgb, var(--section-color) 92%, #fff);
-  --rail-pattern-2: color-mix(in srgb, var(--section-color) 82%, #000);
-
-  background: var(--section-color);
-}
-
-.section-tone-about,
-.section-tone-work {
+  --background: #000;
   --foreground: #fff;
   --primary: #fff;
   --text-muted: #fff;
   --text-subtle: #fff;
+  --border: #262626;
+  --corner: #262626;
+  --rail-pattern-1: #000;
+  --rail-pattern-2: #000;
+
+  background: #000;
 }
 
-.section-tone-project {
-  --foreground: #000;
-  --primary: #000;
-  --text-muted: #000;
-  --text-subtle: #000;
+:root,
+html.dark {
+  --background: #000;
+  --foreground: #fff;
+  --card: #000;
+  --card-foreground: #fff;
+  --popover: #000;
+  --popover-foreground: #fff;
+  --primary: #fff;
+  --primary-foreground: #000;
+  --secondary: #000;
+  --secondary-foreground: #fff;
+  --muted: #000;
+  --muted-foreground: #fff;
+  --accent: #000;
+  --accent-foreground: #fff;
+  --border: #262626;
+  --input: #000;
+  --ring: #fff;
+  --sidebar: #000;
+  --sidebar-foreground: #fff;
+  --sidebar-primary: #fff;
+  --sidebar-primary-foreground: #000;
+  --sidebar-accent: #000;
+  --sidebar-accent-foreground: #fff;
+  --sidebar-border: #262626;
+  --sidebar-ring: #fff;
+  --text-muted: #fff;
+  --text-subtle: #fff;
+  --hover-surface: #000;
+  --selected-surface: #000;
+  --grid-surface: #fff;
+  --meter-fill: #fff;
+  --corner: #262626;
+  --rail-pattern-1: #000;
+  --rail-pattern-2: #000;
 }
 
 @theme inline {
@@ -262,7 +318,7 @@ body::-webkit-scrollbar {
   --c2: var(--rail-pattern-2);
 
   /* space between the frame edge and the viewport edge */
-  --rail-space: max(0px, (100vw - var(--frame-max)) / 2);
+  --rail-space: var(--gutter);
   /* tile width divides the rail exactly, so no partial column is left over */
   --s: calc(var(--rail-space) / var(--cols));
 

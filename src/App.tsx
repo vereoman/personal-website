@@ -169,7 +169,6 @@ export default function App() {
       isMusicPlayerInHeader={isMusicPlayerInHeader}
       midiPlayback={midiPlayback}
       onPress={handlePress}
-      usesMacCommandKey={usesMacCommandKey}
     />
   );
 }
