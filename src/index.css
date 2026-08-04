@@ -182,14 +182,35 @@ html.dark {
   --section-color: var(--section-5);
 }
 
+/* Light mode (default): one surface tone, one ink tone for text and rules. */
 .section-tone-header,
 .section-tone-about,
 .section-tone-work,
 .section-tone-project,
 .section-tone-footer {
+  --background: #d3dad9;
+  --foreground: #37353e;
+  --primary: #37353e;
+  --primary-foreground: #d3dad9;
+  --text-muted: #37353e;
+  --text-subtle: #37353e;
+  --border: #37353e;
+  --corner: #37353e;
+  --rail-pattern-1: #d3dad9;
+  --rail-pattern-2: #d3dad9;
+
+  background: #d3dad9;
+}
+
+html.dark .section-tone-header,
+html.dark .section-tone-about,
+html.dark .section-tone-work,
+html.dark .section-tone-project,
+html.dark .section-tone-footer {
   --background: #000;
   --foreground: #fff;
   --primary: #fff;
+  --primary-foreground: #000;
   --text-muted: #fff;
   --text-subtle: #fff;
   --border: #262626;
@@ -200,7 +221,43 @@ html.dark {
   background: #000;
 }
 
-:root,
+:root {
+  --background: #d3dad9;
+  --foreground: #37353e;
+  --card: #d3dad9;
+  --card-foreground: #37353e;
+  --popover: #d3dad9;
+  --popover-foreground: #37353e;
+  --primary: #37353e;
+  --primary-foreground: #d3dad9;
+  --secondary: #d3dad9;
+  --secondary-foreground: #37353e;
+  --muted: #d3dad9;
+  --muted-foreground: #37353e;
+  --accent: #d3dad9;
+  --accent-foreground: #37353e;
+  --border: #37353e;
+  --input: #d3dad9;
+  --ring: #37353e;
+  --sidebar: #d3dad9;
+  --sidebar-foreground: #37353e;
+  --sidebar-primary: #37353e;
+  --sidebar-primary-foreground: #d3dad9;
+  --sidebar-accent: #d3dad9;
+  --sidebar-accent-foreground: #37353e;
+  --sidebar-border: #37353e;
+  --sidebar-ring: #37353e;
+  --text-muted: #37353e;
+  --text-subtle: #37353e;
+  --hover-surface: #d3dad9;
+  --selected-surface: #d3dad9;
+  --grid-surface: #37353e;
+  --meter-fill: #37353e;
+  --corner: #37353e;
+  --rail-pattern-1: #d3dad9;
+  --rail-pattern-2: #d3dad9;
+}
+
 html.dark {
   --background: #000;
   --foreground: #fff;
